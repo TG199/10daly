@@ -27,7 +27,7 @@ export function OnboardingComplete({ parentName }: OnboardingCompleteProps) {
           </p>
 
           <Button asChild className="w-full h-12 text-base bg-primary hover:bg-primary/90">
-            <Link to="/">Go to Dashboard</Link>
+            <Link to="/dashboard">Go to Dashboard</Link>
           </Button>
         </div>
 
