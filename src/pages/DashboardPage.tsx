@@ -53,7 +53,12 @@ export default function DashboardPage() {
           >
             <Bell className="w-5 h-5" />
           </Button>
-          <Button variant="ghost" size="icon" className="text-muted-foreground">
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="text-muted-foreground"
+            onClick={() => navigate("/settings")}
+          >
             <Settings className="w-5 h-5" />
           </Button>
         </div>
