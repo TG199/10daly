@@ -2,8 +2,9 @@ import { StatusBanner } from "@/components/dashboard/StatusBanner";
 import { DailySummary } from "@/components/dashboard/DailySummary";
 import { SignalBreakdown } from "@/components/dashboard/SignalBreakdown";
 import { WeeklyTrend } from "@/components/dashboard/WeeklyTrend";
-import { Settings } from "lucide-react";
+import { Settings, Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 // Mock data - ready for backend integration
 const mockData = {
@@ -34,6 +35,8 @@ const mockData = {
 };
 
 export default function DashboardPage() {
+  const navigate = useNavigate();
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-sage-light/30 to-warmth/20">
       {/* Header */}
@@ -41,9 +44,19 @@ export default function DashboardPage() {
         <h1 className="font-serif text-2xl text-foreground">
           {mockData.parentName}
         </h1>
-        <Button variant="ghost" size="icon" className="text-muted-foreground">
-          <Settings className="w-5 h-5" />
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="text-muted-foreground"
+            onClick={() => navigate("/alerts")}
+          >
+            <Bell className="w-5 h-5" />
+          </Button>
+          <Button variant="ghost" size="icon" className="text-muted-foreground">
+            <Settings className="w-5 h-5" />
+          </Button>
+        </div>
       </header>
 
       {/* Main Content */}
