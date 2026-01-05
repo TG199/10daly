@@ -4,9 +4,11 @@ import { ArrowLeft, Pill } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ConfirmationButton } from "@/components/medication/ConfirmationButton";
 import { SuccessFeedback } from "@/components/medication/SuccessFeedback";
+import { useAppState } from "@/contexts/AppStateContext";
 
 export default function MedicationConfirmPage() {
   const navigate = useNavigate();
+  const { confirmMedication } = useAppState();
   const [isConfirmed, setIsConfirmed] = useState(false);
   const [confirmedTime, setConfirmedTime] = useState("");
 
@@ -19,6 +21,7 @@ export default function MedicationConfirmPage() {
     });
     setConfirmedTime(timeString);
     setIsConfirmed(true);
+    confirmMedication();
   };
 
   const currentTime = new Date().toLocaleTimeString("en-US", {

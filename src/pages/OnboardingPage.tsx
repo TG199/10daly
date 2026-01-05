@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAppState } from "@/contexts/AppStateContext";
 import { OnboardingStep } from "@/components/onboarding/OnboardingStep";
 import { OnboardingComplete } from "@/components/onboarding/OnboardingComplete";
 import { ParentNameStep } from "@/components/onboarding/steps/ParentNameStep";
@@ -19,6 +21,8 @@ interface OnboardingData {
 const TOTAL_STEPS = 5;
 
 export default function OnboardingPage() {
+  const navigate = useNavigate();
+  const { completeOnboarding } = useAppState();
   const [currentStep, setCurrentStep] = useState(1);
   const [data, setData] = useState<OnboardingData>({
     parentName: "",
@@ -33,7 +37,15 @@ export default function OnboardingPage() {
     setData((prev) => ({ ...prev, ...updates }));
   };
 
-  const goNext = () => setCurrentStep((prev) => Math.min(prev + 1, TOTAL_STEPS + 1));
+  const goNext = () => {
+    if (currentStep === TOTAL_STEPS) {
+      // Complete onboarding and navigate to dashboard
+      completeOnboarding(data.parentName || "your loved one");
+      navigate("/dashboard");
+    } else {
+      setCurrentStep((prev) => Math.min(prev + 1, TOTAL_STEPS + 1));
+    }
+  };
   const goBack = () => setCurrentStep((prev) => Math.max(prev - 1, 1));
 
   const toggleDevice = (device: string) => {
@@ -45,9 +57,11 @@ export default function OnboardingPage() {
     }));
   };
 
-  // Show completion screen
+  // Completion is now handled in goNext, but keep as fallback
   if (currentStep > TOTAL_STEPS) {
-    return <OnboardingComplete parentName={data.parentName || "your loved one"} />;
+    completeOnboarding(data.parentName || "your loved one");
+    navigate("/dashboard");
+    return null;
   }
 
   // Step 1: Parent Name
