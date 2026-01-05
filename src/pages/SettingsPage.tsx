@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { SettingsGroup } from "@/components/settings/SettingsGroup";
 import { SettingRow } from "@/components/settings/SettingRow";
 import { EditSettingDialog } from "@/components/settings/EditSettingDialog";
+import { AppNavigation } from "@/components/navigation/AppNavigation";
+import { useAppState } from "@/contexts/AppStateContext";
 import { useToast } from "@/hooks/use-toast";
 
 // Mock data - ready for backend integration
@@ -27,7 +27,11 @@ const timezoneOptions = [
 export default function SettingsPage() {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [settings, setSettings] = useState(initialSettings);
+  const { logout, parentName } = useAppState();
+  const [settings, setSettings] = useState({
+    ...initialSettings,
+    parentName: parentName || initialSettings.parentName,
+  });
   
   const [editDialog, setEditDialog] = useState<{
     open: boolean;
@@ -75,6 +79,7 @@ export default function SettingsPage() {
   };
 
   const handleSignOut = () => {
+    logout();
     toast({
       title: "Signed out",
       description: "You have been signed out successfully.",
@@ -83,18 +88,9 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-sage-light/30 to-warmth/20">
+    <div className="min-h-screen bg-gradient-to-b from-sage-light/30 to-warmth/20 pb-24">
       {/* Header */}
       <header className="px-6 py-4 flex items-center gap-4 max-w-2xl mx-auto">
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => navigate("/dashboard")}
-          className="text-muted-foreground"
-          aria-label="Go back to dashboard"
-        >
-          <ArrowLeft className="w-5 h-5" />
-        </Button>
         <h1 className="font-serif text-2xl text-foreground">Settings</h1>
       </header>
 
@@ -164,6 +160,9 @@ export default function SettingsPage() {
         options={editDialog.options}
         onSave={handleSave}
       />
+
+      {/* Navigation */}
+      <AppNavigation />
     </div>
   );
 }

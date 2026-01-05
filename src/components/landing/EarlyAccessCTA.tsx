@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 const EarlyAccessCTA = () => {
   const [email, setEmail] = useState("");
@@ -53,6 +54,12 @@ const EarlyAccessCTA = () => {
             </div>
             <p className="text-sm text-muted-foreground">
               We'll only email you about launch updates. No spam, ever.
+            </p>
+            <p className="text-sm text-muted-foreground pt-2">
+              Already have an account?{" "}
+              <Link to="/auth" className="text-primary hover:underline">
+                Sign in
+              </Link>
             </p>
           </form>
         ) : (

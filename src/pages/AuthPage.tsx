@@ -2,7 +2,8 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAppState } from "@/contexts/AppStateContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -17,6 +18,8 @@ const authSchema = z.object({
 type AuthFormData = z.infer<typeof authSchema>;
 
 const AuthPage = () => {
+  const navigate = useNavigate();
+  const { login, isOnboardingComplete } = useAppState();
   const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [showMagicLinkSent, setShowMagicLinkSent] = useState(false);
@@ -30,8 +33,14 @@ const AuthPage = () => {
   });
 
   const onSubmit = async (data: AuthFormData) => {
-    // Visual only - no backend
     console.log("Auth submitted:", { ...data, mode: isLogin ? "login" : "signup" });
+    login();
+    // Redirect based on onboarding status
+    if (isOnboardingComplete) {
+      navigate("/dashboard");
+    } else {
+      navigate("/onboarding");
+    }
   };
 
   const handleMagicLink = () => {

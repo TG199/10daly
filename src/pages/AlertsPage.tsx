@@ -1,7 +1,6 @@
-import { ArrowLeft, Bell } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
+import { Bell } from "lucide-react";
 import { AlertItem } from "@/components/alerts/AlertItem";
+import { AppNavigation } from "@/components/navigation/AppNavigation";
 
 // Mock data - will be replaced with real data from backend
 const mockAlerts = [
@@ -38,21 +37,11 @@ const mockAlerts = [
 ];
 
 export default function AlertsPage() {
-  const navigate = useNavigate();
-
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pb-24">
       <div className="max-w-2xl mx-auto px-4 py-8">
         {/* Header */}
         <div className="flex items-center gap-4 mb-8">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => navigate("/dashboard")}
-            className="text-muted-foreground hover:text-foreground"
-          >
-            <ArrowLeft className="w-5 h-5" />
-          </Button>
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-full bg-accent flex items-center justify-center">
               <Bell className="w-5 h-5 text-accent-foreground" />
@@ -106,6 +95,9 @@ export default function AlertsPage() {
           Showing the last 30 days of observations
         </p>
       </div>
+
+      {/* Navigation */}
+      <AppNavigation />
     </div>
   );
 }
