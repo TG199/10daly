@@ -1,7 +1,8 @@
-import { useNavigate } from "react-router-dom";
-
 const Hero = () => {
-  const navigate = useNavigate();
+  const scrollToWaitlist = () => {
+    const waitlistSection = document.querySelector('#early-access-cta');
+    waitlistSection?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  };
 
   return (
     <section className="min-h-[90vh] flex flex-col items-center justify-center px-6 py-20 bg-gradient-to-b from-background to-sage-light">
@@ -24,7 +25,7 @@ const Hero = () => {
         {/* CTA */}
         <div className="pt-4">
           <button
-            onClick={() => navigate("/auth")}
+            onClick={scrollToWaitlist}
             className="bg-primary text-primary-foreground px-8 py-4 rounded-lg text-lg font-medium hover:opacity-90 transition-opacity shadow-sm"
           >
             Join the Early Access List
