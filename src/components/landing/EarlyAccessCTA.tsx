@@ -10,24 +10,55 @@ const EarlyAccessCTA = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    if (!email) {
+      setError('Please enter your email address.');
+      return;
+    }
+    
     try {
       setIsSubmitting(true);
       setError(null);
       
-      const response = await fetch('/api/waitlist', {
+      // MailerLite API configuration
+      const MAILERLITE_API_KEY = import.meta.env.VITE_MAILERLITE_API_KEY || 
+        'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiI0IiwianRpIjoiODdiNzIyYjc4NTk5ZGUwNjVkNGIyOTVkY2I4ZTJjYzgxODYzNzI1NWY4MjQ1OGJlMTQ5Y2Y5ZmM0NTFjYzU4YzlmNTU3NTJjZGNlYTk3YTYiLCJpYXQiOjE3NjkxMjA5OTguNjYwNTE0LCJuYmYiOjE3NjkxMjA5OTguNjYwNTE2LCJleHAiOjQ5MjQ3OTQ1OTguNjUyNjQ5LCJzdWIiOiIyMDc1OTkyIiwic2NvcGVzIjpbXX0.jpSBC7AqfF7kQghnvCV4wO3zCfpzIFCpB3JbBRbSxvVzv4n7A8FP7dAsH0W2rbcN7rIQn5_RifGnVAMdR6yRs_qezI5SX1YdkFZti0Z3TIBFp10U2ouf2T5B0mElIfrZsT-7FRKl1497s5LFSR_f-NBkYkruf2XTY5z2WhUQRf-Omtshf9MNWVYf1W_wD4pAJjWPXIg2WWcO2c1CUnxwwtP4hYajfMUU9EmDefeTdfPhkXIqZQTL6AFzikP1epZskUIKqG79Xjop1lIcK0-0Nuwi-8pF4eszSfsTI6gj0IQI_Lanj-5an0ZirsxTwwGznttvia_2ZSC6QapRlEHZv4-sSee90PqGcE8byXp_wBzVA9blOc0mVAL__04axfKDWLzn_S1hc5E_FVwSqCU1bGV9Yts6rU5zxXZL56uOAeGdWyL7-jGjcUhMPGQGM-n8ChfAK7BDUe_MEkAdoVh6JpWBkfip8NE8H2IZyKv_JnDlXYVAjbdASpSg_pnwuAQHzYRU-HPWydYF3jjf5KrD-7vvmR_ilwIZBhh0nPfzIttBSvQZ6ioJI5w9wVE8r6_ZgqAAtaAimV1Ev_LAX1YCIaF5FJAVU0hbi3WtFOPRn_yEx5S-2ipb6DBkpEq0sK7mQxYU0v5B_yK9Jm8TGh8eIR6mYXzQv1Jf3bk_EAiRC8E';
+      const MAILERLITE_GROUP_ID = import.meta.env.VITE_MAILERLITE_GROUP_ID || 
+        '177335561597486964';
+      
+      // Call MailerLite API to add subscriber
+      const response = await fetch('https://connect.mailerlite.com/api/subscribers', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': `Bearer ${MAILERLITE_API_KEY}`,
         },
-        body: JSON.stringify({ email, name }),
+        body: JSON.stringify({
+          email: email.trim(),
+          ...(name.trim() && { 
+            fields: {
+              name: name.trim()
+            }
+          }),
+          groups: [MAILERLITE_GROUP_ID],
+        }),
       });
       
       if (!response.ok) {
-        throw new Error('Failed to join waitlist. Please try again.');
+        const errorData = await response.json().catch(() => null);
+        
+        // Handle specific error cases
+        if (response.status === 422 && errorData?.message?.includes('already exists')) {
+          setError('This email is already on our waitlist. Thank you!');
+          return;
+        }
+        
+        throw new Error(errorData?.message || 'Failed to join waitlist. Please try again.');
       }
       
       setSubmitted(true);
     } catch (err) {
+      console.error('Waitlist submission error:', err);
       setError(err instanceof Error ? err.message : 'Something went wrong. Please try again.');
     } finally {
       setIsSubmitting(false);
