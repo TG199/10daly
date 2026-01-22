@@ -9,7 +9,7 @@ const EarlyAccessCTA = () => {
     e.preventDefault();
     if (email) {
       try {
-        // POST to placeholder endpoint
+        // POST to placeholder endpoint - will be replaced with real backend integration
         await fetch('/api/waitlist', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -18,7 +18,8 @@ const EarlyAccessCTA = () => {
         setSubmitted(true);
       } catch (error) {
         console.error('Waitlist submission error:', error);
-        // Still show success for now (graceful degradation)
+        // Intentionally show success for graceful degradation until backend is ready
+        // TODO: Add proper error handling and user feedback once backend is implemented
         setSubmitted(true);
       }
     }
